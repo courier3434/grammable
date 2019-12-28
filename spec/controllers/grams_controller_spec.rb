@@ -40,7 +40,7 @@ RSpec.describe GramsController, type: :controller do
       user = FactoryBot.create(:user)
       sign_in user
       patch :update, params: { id: gram.id, gram: { message: 'message' } }
-      expect(response).to have_http_status(:fordidden)
+      expect(response).to have_http_status(:forbidden)
     end
 
     it "shouldn't let unauthenticated users update a gram" do
@@ -58,12 +58,11 @@ RSpec.describe GramsController, type: :controller do
     end
 
     it "should render the edit form with an http status of unprocessable_entity" do
-      gram= FactoryBot.create(:gram, messsage: "Initial Value")
+      gram= FactoryBot.create(:gram, message: "Initial Value")
       sign_in gram.user
 
       patch :update, params: { id: gram.id, gram: { message: '' } }
-      expect(response).to redirect_to root_path
-      gram.reload
+      expect(response).to have_http_status(:unprocessable_entity)
       expect(gram.message).to eq "Initial Value"
     end
   end
@@ -149,7 +148,6 @@ RSpec.describe GramsController, type: :controller do
      }
    }
 
-      post :create, params: { gram: { message: 'Hello!' } }
       expect(response).to redirect_to root_path
 
       gram = Gram.last
